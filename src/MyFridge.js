@@ -1,10 +1,13 @@
-import react, { useState } from 'react'
+import react, { useState, useContext } from 'react'
+import { FridgeContext } from './FridgeContext';
+import { Link, useNavigate } from 'react-router-dom';
 import './index.css'
 
 function MyFridge(){
     const [itemName, setItemName] = useState('');
     const [quantity, setQuantity] = useState(1);
-    const [fridgeItems, setFridgeItems] = useState([]);
+    const { items: fridgeItems, setItems: setFridgeItems } = useContext(FridgeContext);
+    const navigate = useNavigate();
 
     const handleAddItem = () => {
         if (itemName.trim() === '') return;
@@ -28,7 +31,12 @@ function MyFridge(){
     return (
         <div>
         <div className='green_header'>
-            <button className='clear_fridge back_to_home'>Back to home</button>
+        <button
+            className='clear_fridge back_to_home'
+            onClick={() => navigate('/')}
+        >
+            Back to home
+        </button>
             <h1>My Fridge</h1>
             <button className='clear_fridge' onClick={() => setFridgeItems([])}> Clear Fridge </button>
         </div>
@@ -58,9 +66,27 @@ function MyFridge(){
                 </li>
             ))}
         </ul>
+        
+        {fridgeItems.length > 0 && (
+            <div style={{ marginTop: '2rem' }}>
+                <Link to="/recipes">
+                    <button
+                        style={{
+                            backgroundColor: '#f06060',
+                            color: 'white',
+                            border: 'none',
+                            padding: '1rem 2rem',
+                            fontSize: '1rem',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        Generate the Recipes
+                    </button>
+                </Link>
+            </div>
+        )}
     </div>
-
-
     );
 }
 
