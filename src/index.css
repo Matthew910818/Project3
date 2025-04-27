@@ -36,7 +36,8 @@ h1 {
   border: none;
   color: white;
   font-size: large;
-
+  border-radius: 15px;
+  cursor: pointer;
 }
 
 .back_to_home{
@@ -50,6 +51,15 @@ h1 {
 .input_food_items{
   height: 30px;
   width: 200px;
-  margin-top: 10%;
-  margin-left: 40%;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
 }

@@ -14,7 +14,7 @@ function MyFridge(){
 
         const newItem = {
             name: itemName,
-            quantity: quantity,
+            quantity: quantity === '' ? 1 : quantity,
             id: Date.now()
         };
 
@@ -30,63 +30,149 @@ function MyFridge(){
 
     return (
         <div>
-        <div className='green_header'>
-        <button
-            className='clear_fridge back_to_home'
-            onClick={() => navigate('/')}
-        >
-            Back to home
-        </button>
-            <h1>My Fridge</h1>
-            <button className='clear_fridge' onClick={() => setFridgeItems([])}> Clear Fridge </button>
-        </div>
-
-        <div style={{ margin: '2rem'}}>
-            <input className='input_food_items' type="text" placeholder="Enter food item..." value={itemName} onChange={(e) => setItemName(e.target.value)}
-            style={{ marginLeft: '10px', padding: '0.5rem'}}
-            />
-            <input type="number" min="1" value={quantity} onChange={(e) => setQuantity(Number(e.target.value))}
-            style={{ marginLeft: '10px', padding: '0.5rem', width: '100px' }}
-            />
-
-            <button onClick={handleAddItem} className='clear_fridge' style={{ marginLeft: '10px', padding: '0.5rem' }}>Add Item     
-            </button>
-        </div>
-
-        <ul>
-            {fridgeItems.map((item, index) => (
-                <li key={index}> 
-                {item.quantity} {item.name}
+            <div className='green_header'>
                 <button
-                style ={{ marginLeft: '15px' }}
-                onClick={() => handleRemoveItem(index)}
+                    className='clear_fridge back_to_home'
+                    onClick={() => navigate('/')}
                 >
-                    Remove Items
+                    Back to home
                 </button>
-                </li>
-            ))}
-        </ul>
-        
-        {fridgeItems.length > 0 && (
-            <div style={{ marginTop: '2rem' }}>
-                <Link to="/recipes">
-                    <button
-                        style={{
-                            backgroundColor: '#f06060',
+                <h1>My Fridge</h1>
+                <button className='clear_fridge' onClick={() => setFridgeItems([])}> Clear Fridge </button>
+            </div>
+
+            <div style={{ 
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: '4rem',
+                gap: '20px'
+            }}>
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    gap: '10px',
+                    width: '100%'
+                }}>
+                    <input 
+                        className='input_food_items' 
+                        type="text" 
+                        placeholder="Enter food item..." 
+                        value={itemName} 
+                        onChange={(e) => setItemName(e.target.value)}
+                        style={{ 
+                            padding: '0.5rem',
+                            borderRadius: '8px',
+                            border: '1px solid #ccc',
+                            width: '250px',
+                            margin: 0
+                        }}
+                    />
+                    <input 
+                        type="text" 
+                        value={quantity} 
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            if (value === '' || (/^[1-9][0-9]*$/.test(value) || value === '0')) {
+                                setQuantity(value === '' ? '' : Number(value));
+                            }
+                        }}
+                        onBlur={() => {
+                            if (quantity === '' || quantity === 0) {
+                                setQuantity(1);
+                            }
+                        }}
+                        style={{ 
+                            padding: '0.5rem', 
+                            width: '100px',
+                            borderRadius: '8px',
+                            border: '1px solid #ccc',
+                            margin: 0
+                        }}
+                    />
+                    <button 
+                        onClick={handleAddItem} 
+                        style={{ 
+                            backgroundColor: '#FE4A50',
                             color: 'white',
                             border: 'none',
-                            padding: '1rem 2rem',
-                            fontSize: '1rem',
-                            borderRadius: '8px',
-                            cursor: 'pointer',
+                            padding: '0.5rem 1rem',
+                            borderRadius: '15px',
+                            cursor: 'pointer'
                         }}
                     >
-                        Generate the Recipes
+                        Add Item     
                     </button>
-                </Link>
+                </div>
+
+                <div style={{ 
+                    width: '500px',
+                    margin: '20px auto'
+                }}>
+                    {fridgeItems.map((item, index) => (
+                        <div key={index} style={{ 
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between', 
+                            padding: '8px 12px',
+                            marginBottom: '8px',
+                            backgroundColor: 'white',
+                            borderRadius: '8px',
+                            boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                        }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <span style={{ 
+                                    marginRight: '12px',
+                                    fontSize: '16px'
+                                }}>
+                                    🍽️
+                                </span>
+                                <span>
+                                    {item.quantity} {item.name}
+                                </span>
+                            </div>
+                            <button
+                                style={{ 
+                                    backgroundColor: '#FE4A50',
+                                    color: 'white',
+                                    border: 'none',
+                                    padding: '0.3rem 0.8rem',
+                                    borderRadius: '15px',
+                                    cursor: 'pointer'
+                                }}
+                                onClick={() => handleRemoveItem(index)}
+                            >
+                                Remove Items
+                            </button>
+                        </div>
+                    ))}
+                </div>
+                
+                <div style={{ 
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginTop: '2rem' 
+                }}>
+                    <Link to="/recipes">
+                        <button
+                            style={{
+                                backgroundColor: '#f06060',
+                                color: 'white',
+                                border: 'none',
+                                padding: '1rem 2rem',
+                                fontSize: '1rem',
+                                borderRadius: '15px',
+                                cursor: 'pointer',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                            }}
+                        >
+                            Generate the Recipes
+                        </button>
+                    </Link>
+                </div>
             </div>
-        )}
-    </div>
+        </div>
     );
 }
 
