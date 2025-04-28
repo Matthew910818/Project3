@@ -19,7 +19,14 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "backend:start": "npm --prefix backend run start",
+    "backend:seed": "npm --prefix backend run seed",
+    "frontend:start": "npm --prefix frontend start",
+    "start:all": "concurrently \"npm run backend:seed\" \"npm run backend:start\" \"npm run frontend:start\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
   },
   "eslintConfig": {
     "extends": [

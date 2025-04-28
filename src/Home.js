@@ -28,6 +28,10 @@ function Home() {
                 <Link to="/recipes">
                     <button style={buttonStyle}>Recipe Generator</button>
                 </Link>
+
+                <Link to="/saved">
+                    <button style={buttonStyle}>Saved Recipes</button>
+                </Link>
             </div>
         </div>
     );

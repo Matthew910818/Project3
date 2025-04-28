@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 
-function RecipeCard({ recipe, onSaveRecipe }) {
+function RecipeCard({ recipe, onSaveRecipe, onRemoveRecipe }) {
     const [isSelected, setIsSelected] = useState(false);
 
     const handleCheckboxChange = () => {
         const newSelectedState = !isSelected;
         setIsSelected(newSelectedState);
         
-        if (newSelectedState && onSaveRecipe) {
-            onSaveRecipe(recipe);
+        if (newSelectedState) {
+            onSaveRecipe && onSaveRecipe(recipe);
+        } else {
+            onRemoveRecipe && onRemoveRecipe(recipe);
         }
     };
 

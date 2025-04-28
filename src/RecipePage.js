@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { FridgeContext } from './FridgeContext';
 import { Link } from 'react-router-dom';
 import { generateRecipes } from './openaiService';
@@ -11,6 +11,15 @@ function RecipePage() {
     const [error, setError] = useState(null);
     const [savedRecipes, setSavedRecipes] = useState([]);
     const [saveSuccess, setSaveSuccess] = useState(false);
+
+    // ─── load any previously saved recipes from localStorage ─────────────────
+    useEffect(() => {
+        const stored = localStorage.getItem('savedRecipes');
+        if (stored) {
+            setSavedRecipes(JSON.parse(stored));
+        }
+    }, []);
+
 
     const handleGenerateRecipes = async () => {
         setIsLoading(true);
@@ -28,16 +37,17 @@ function RecipePage() {
     };
 
     const handleSaveRecipe = (recipe) => {
-        // Store in local state only
-        if (!savedRecipes.some(savedRecipe => savedRecipe.name === recipe.name)) {
-            setSavedRecipes([...savedRecipes, recipe]);
-            setSaveSuccess(true);
-            
-            // Hide success message after 3 seconds
-            setTimeout(() => {
-                setSaveSuccess(false);
-            }, 3000);
+        if (!savedRecipes.some(r => r.name === recipe.name)) {
+            const updated = [...savedRecipes, recipe];
+            setSavedRecipes(updated);
+            localStorage.setItem('savedRecipes', JSON.stringify(updated));
         }
+    };
+
+    const handleRemoveRecipe = (recipe) => {
+        const updated = savedRecipes.filter(r => r.name !== recipe.name);
+        setSavedRecipes(updated);
+        localStorage.setItem('savedRecipes', JSON.stringify(updated));
     };
 
     return (
@@ -203,6 +213,7 @@ function RecipePage() {
                                                 key={index} 
                                                 recipe={recipe}
                                                 onSaveRecipe={handleSaveRecipe}
+                                                onRemoveRecipe={handleRemoveRecipe}
                                             />
                                         ))}
                                     </div>
