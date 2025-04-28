@@ -1,18 +1,21 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { FridgeContext } from './FridgeContext';
+import { useUser } from './UserContext';
 import { Link } from 'react-router-dom';
 import { generateRecipes } from './openaiService';
 import RecipeCard from './components/RecipeCard';
+import UserInfoModal from './components/UserInfoModal';
 
 function RecipePage() {
     const { items: fridgeItems } = useContext(FridgeContext);
+    const { userInfo, updateUserInfo } = useUser();
     const [recipes, setRecipes] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [savedRecipes, setSavedRecipes] = useState([]);
     const [saveSuccess, setSaveSuccess] = useState(false);
+    const [showUserInfoModal, setShowUserInfoModal] = useState(false);
 
-    // ─── load any previously saved recipes from localStorage ─────────────────
     useEffect(() => {
         const stored = localStorage.getItem('savedRecipes');
         if (stored) {
@@ -20,14 +23,14 @@ function RecipePage() {
         }
     }, []);
 
-
-    const handleGenerateRecipes = async () => {
+    const handleGenerateRecipes = async (userInfo) => {
         setIsLoading(true);
         setError(null);
         
         try {
-            const result = await generateRecipes(fridgeItems);
+            const result = await generateRecipes(fridgeItems, userInfo);
             setRecipes(result.recipes);
+            setShowUserInfoModal(false);
         } catch (err) {
             console.error("Error generating recipes:", err);
             setError("Failed to generate recipes. Please check your API key and try again.");
@@ -41,6 +44,8 @@ function RecipePage() {
             const updated = [...savedRecipes, recipe];
             setSavedRecipes(updated);
             localStorage.setItem('savedRecipes', JSON.stringify(updated));
+            setSaveSuccess(true);
+            setTimeout(() => setSaveSuccess(false), 3000);
         }
     };
 
@@ -72,10 +77,9 @@ function RecipePage() {
                     </button>
                 </Link>
                 <h1 style={{ color: 'white' }}>Recipe Generator</h1>
-                <div></div> {}
+                <div></div>
             </div>
 
-            {/* Success message */}
             {saveSuccess && (
                 <div style={{
                     position: 'fixed',
@@ -91,6 +95,13 @@ function RecipePage() {
                 }}>
                     Recipe saved successfully! ✓
                 </div>
+            )}
+
+            {showUserInfoModal && (
+                <UserInfoModal
+                    onClose={() => setShowUserInfoModal(false)}
+                    onSubmit={handleGenerateRecipes}
+                />
             )}
 
             <div style={{ 
@@ -150,7 +161,7 @@ function RecipePage() {
                                     justifyContent: 'center'
                                 }}>
                                     <button
-                                        onClick={handleGenerateRecipes}
+                                        onClick={() => setShowUserInfoModal(true)}
                                         style={{
                                             backgroundColor: '#f06060',
                                             color: 'white',
@@ -222,7 +233,7 @@ function RecipePage() {
                                 {!isLoading && !error && (
                                     <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
                                         <button
-                                            onClick={handleGenerateRecipes}
+                                            onClick={() => setShowUserInfoModal(true)}
                                             style={{
                                                 backgroundColor: '#4c7737',
                                                 color: 'white',
