@@ -100,7 +100,12 @@ function RecipePage() {
             {showUserInfoModal && (
                 <UserInfoModal
                     onClose={() => setShowUserInfoModal(false)}
-                    onSubmit={handleGenerateRecipes}
+                    onSubmit={(formData) => {
+                        // 1) immediately hide the modal
+                        setShowUserInfoModal(false);
+                        // 2) kick off the recipe generation
+                        handleGenerateRecipes(formData);
+                    }}
                 />
             )}
 

@@ -4,11 +4,11 @@ import { useUser } from '../UserContext';
 function UserInfoModal({ onClose, onSubmit }) {
     const { userInfo, updateUserInfo } = useUser();
     const [formData, setFormData] = useState({
-        age: userInfo.age || '',
-        height: userInfo.height || '',
-        weight: userInfo.weight || '',
-        gender: userInfo.gender || '',
-        dietaryRestrictions: userInfo.dietaryRestrictions || []
+        age: userInfo?.age || '',
+        height: userInfo?.height || '',
+        weight: userInfo?.weight || '',
+        gender: userInfo?.gender || '',
+        dietaryRestrictions: userInfo?.dietaryRestrictions || []
     });
 
     const dietaryOptions = [
